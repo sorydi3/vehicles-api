@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/map")
+@RequestMapping("/maps")
 public class MapsController {
-
+    
     @GetMapping
     public Address get(@RequestParam Double lat, @RequestParam Double lon) {
         return MockAddressRepository.getRandom();
     }
+
 }
