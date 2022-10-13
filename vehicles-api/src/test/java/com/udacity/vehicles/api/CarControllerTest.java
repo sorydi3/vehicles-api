@@ -1,14 +1,8 @@
 package com.udacity.vehicles.api;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.udacity.vehicles.client.maps.MapsClient;
@@ -33,6 +27,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 /**
  * Implements testing of the CarController class.
@@ -77,14 +73,13 @@ public class CarControllerTest {
     @Test
     public void createCar() throws Exception {
         Car car = getCar();
-        mvc.perform(
-                post(new URI("/cars"))
-                        .content(json.write(car).getJson())
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .accept(MediaType.APPLICATION_JSON_UTF8))
+        car.setId(1L);
+        mvc.perform(post(new URI("/cars"))
+                .content(json.write(car).getJson())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
     }
-
     /**
      * Tests if the read operation appropriately returns a list of vehicles.
      * @throws Exception if the read operation of the vehicle list fails
@@ -92,12 +87,21 @@ public class CarControllerTest {
     @Test
     public void listCars() throws Exception {
         /**
-         * TODO: Add a test to check that the `get` method works by calling
+         * DONE: Add a test to check that the `get` method works by calling
          *   the whole list of vehicles. This should utilize the car from `getCar()`
          *   below (the vehicle will be the first in the list).
          */
-
+         mvc.perform(MockMvcRequestBuilders.get("/cars")
+                 .accept(MediaType.APPLICATION_JSON))
+                 .andExpect(status().isOk())
+                 .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
+                 .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.carList.size()").value(1))
+                 .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.carList[0].id").value(1))
+                 .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.carList[0].details.body").value("sedan"))
+                 .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.carList[0].details.model").value("Impala"))
+                 .andExpect(MockMvcResultMatchers.jsonPath("$._embedded.carList[0].details.manufacturer.code").value(101));
     }
+
 
     /**
      * Tests the read operation for a single car by ID.
@@ -106,9 +110,18 @@ public class CarControllerTest {
     @Test
     public void findCar() throws Exception {
         /**
-         * TODO: Add a test to check that the `get` method works by calling
+         * DONE: Add a test to check that the `get` method works by calling
          *   a vehicle by ID. This should utilize the car from `getCar()` below.
          */
+        mvc.perform(MockMvcRequestBuilders.get("/cars/1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.details.body").value("sedan"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.details.model").value("Impala"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.details.manufacturer.code").value(101));
+                
     }
 
     /**
@@ -118,10 +131,13 @@ public class CarControllerTest {
     @Test
     public void deleteCar() throws Exception {
         /**
-         * TODO: Add a test to check whether a vehicle is appropriately deleted
+         * DONE: Add a test to check whether a vehicle is appropriately deleted
          *   when the `delete` method is called from the Car Controller. This
          *   should utilize the car from `getCar()` below.
          */
+        mvc.perform(MockMvcRequestBuilders.delete("/cars/1")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
     }
 
     /**
