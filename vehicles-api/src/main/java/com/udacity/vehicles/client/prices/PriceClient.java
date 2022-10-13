@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * Implements a class to interface with the Pricing Client for price data.
@@ -14,14 +13,9 @@ public class PriceClient {
 
     private static final Logger log = LoggerFactory.getLogger(PriceClient.class);
 
-    private final WebClient client;
-
     @Autowired
     FeingClientPricing feingClientPricing;
 
-    public PriceClient(WebClient pricing) {
-        this.client = pricing;
-    }
 
     // In a real-world application we'll want to add some resilience
     // to this method with retries/CB/failover capabilities
