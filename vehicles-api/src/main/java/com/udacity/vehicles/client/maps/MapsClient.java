@@ -5,6 +5,7 @@ import java.util.Objects;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -18,6 +19,8 @@ public class MapsClient {
 
     private final WebClient client;
     private final ModelMapper mapper;
+    @Autowired
+    FeingClientMap feingClientMap;
 
     public MapsClient(WebClient maps,
             ModelMapper mapper) {
@@ -33,18 +36,8 @@ public class MapsClient {
      */
     public Location getAddress(Location location) {
         try {
-            Address address = client
-                    .get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/maps/")
-                            .queryParam("lat", location.getLat())
-                            .queryParam("lon", location.getLon())
-                            .build()
-                    )
-                    .retrieve().bodyToMono(Address.class).block();
-
+            Address address = feingClientMap.getAddress(location.getLat(), location.getLon());
             mapper.map(Objects.requireNonNull(address), location);
-
             return location;
         } catch (Exception e) {
             log.warn("Map service is down");
