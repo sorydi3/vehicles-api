@@ -1,0 +1,44 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-VehiclesApiApplication<vehicles-api>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.udacity.vehicles.VehiclesApiApplication",
+            "projectName": "vehicles-api",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-BoogleMapsApplication<boogle-maps>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.udacity.boogle.maps.BoogleMapsApplication",
+            "projectName": "boogle-maps",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-PricingServiceApplication<pricing-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.udacity.pricing.PricingServiceApplication",
+            "projectName": "pricing-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ServiceregistryeurekaApplication<serviceregistryeureka>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.example.serviceregistryeureka.ServiceregistryeurekaApplication",
+            "projectName": "serviceregistryeureka",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
