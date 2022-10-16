@@ -1,5 +1,6 @@
 package com.udacity.vehicles.api;
 
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -162,5 +163,29 @@ public class CarControllerTest {
         car.setDetails(details);
         car.setCondition(Condition.USED);
         return car;
+    }
+
+    /**
+     * Tests the update operation of a single car by ID.
+     */
+    @Test
+    public void updateCar() throws Exception {
+        /**
+         * DONE: Add a test to check whether a vehicle is appropriately updated
+         *   when the `put` method is called from the Car Controller. This
+         *   should utilize the car from `getCar()` below.
+         */
+        Car car = getCar();
+        car.setId(1L);
+        car.setCondition(Condition.NEW);
+        given(carService.save(any())).willReturn(car);
+        mvc.perform(MockMvcRequestBuilders.put(new URI("/cars/1"))
+                .content(json.write(car).getJson())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.condition").value("NEW"));
     }
 }
